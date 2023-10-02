@@ -1,0 +1,61 @@
+//Deklarasi PIN
+int trig = 8; // membuat varibel trig yang di set ke-pin D6
+int echo = 10; // membuat variabel echo yang di set ke-pin D7
+long durasi, jarak;     // membuat variabel durasi dan jarak
+int merah = 2;
+int kuning = 4;
+int putih = 6;
+int buzzer = 7;
+
+void setup() {
+  pinMode(trig, OUTPUT);    // set pin trig menjadi OUTPUT
+  pinMode(echo, INPUT);     // set pin echo menjadi INPUT
+  pinMode(merah, OUTPUT);
+  pinMode(kuning, OUTPUT);
+  pinMode(putih, OUTPUT);
+  pinMode(buzzer, OUTPUT);
+  Serial.begin(9600);       // digunakan untuk komunikasi Serial dengan komputer
+}
+
+void loop() {
+  digitalWrite(trig, LOW);
+  delayMicroseconds(8);
+  digitalWrite(trig, HIGH);
+  delayMicroseconds(8);
+  digitalWrite(trig, LOW);
+  delayMicroseconds(8);
+  durasi = pulseIn(echo, HIGH); // menerima suara ultrasonic
+  jarak = (durasi / 2) / 29.1;  // mengubah durasi menjadi jarak (cm)
+  
+  if(jarak >= 30){
+    digitalWrite(putih, HIGH);
+    digitalWrite(merah, LOW);
+    digitalWrite(kuning, LOW);
+    digitalWrite(buzzer, LOW);
+    tone(buzzer,1000); // buzzer tidak berbunyi
+    noTone(buzzer);
+  }else if((jarak >=16)&&(jarak <30)){
+    digitalWrite(putih, LOW);
+    digitalWrite(merah, LOW);
+    digitalWrite(kuning, HIGH);
+    digitalWrite(buzzer, LOW);
+    tone(buzzer,1000); // buzzer tidak berbunyi
+    noTone(buzzer);
+  }else if((jarak >=8)&&(jarak <16)){
+    digitalWrite(putih, LOW);
+    digitalWrite(merah, HIGH);
+    digitalWrite(kuning, LOW);
+    tone(buzzer,1000); // buzzer berbunyi keras ketika jarak antara 8 dan kurang dari 16 cm
+    delay(500); 
+    noTone(buzzer); 
+    delay(500); 
+  }else {
+    digitalWrite(putih, HIGH);
+    digitalWrite(merah, HIGH);
+    digitalWrite(kuning, HIGH);
+    tone(buzzer,1000); // buzzer berbunyi keras ketika jarak kurang dari 8 cm
+    delay(500); 
+    noTone(buzzer); 
+    delay(500); 
+  }
+}
